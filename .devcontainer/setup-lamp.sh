@@ -3,9 +3,10 @@
 # Script d'initialisation complète de l'environnement LAMP
 echo "🚀 Initialisation de l'environnement LAMP..."
 
-# Rendre tous les scripts exécutables
-chmod +x /workspaces/LAMP-start/.devcontainer/scripts/*.sh 2>/dev/null || true
-chmod +x /workspaces/LAMP-start/database/scripts/*.sh 2>/dev/null || true
+# Rendre les scripts du dossier database et de la racine exécutables
+WORKSPACE_DIR="$(basename "$PWD")"
+chmod +x "/workspaces/$WORKSPACE_DIR/database/scripts/"*.sh 2>/dev/null || true
+chmod +x "/workspaces/$WORKSPACE_DIR/"*.sh 2>/dev/null || true
 
 # Vérification stricte des variables d'environnement obligatoires
 if [ -z "$MYSQL_ADMIN_USER" ] || [ -z "$MYSQL_ADMIN_PASSWORD" ]; then
