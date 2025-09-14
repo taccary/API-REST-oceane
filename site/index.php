@@ -2,6 +2,7 @@
 header("Content-Type: application/json");
 include 'configBdd.php';
 require __DIR__ . '/API/bateau.php';
+require __DIR__ . '/API/authentification.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 $path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
@@ -19,6 +20,11 @@ if ($segments[0] === 'bateaux') {
             }
             break;
         case 'POST':
+            $user = checkJWT();
+            if (!$user) {
+                http_response_code(401);
+                return json_encode(["error" => "Non autorisé"]);
+            }
             $resultat = createBateau($pdo, json_decode(file_get_contents('php://input'), true));
             break;
         case 'PUT':
@@ -38,7 +44,9 @@ if ($segments[0] === 'bateaux') {
         default:
             $resultat = json_encode(["status" => "error", "message" => "Méthode non autorisée"]);
     }
-} else {
-    $resultat = json_encode(["status" => "error", "message" => "Route non trouvée"]);
+} elseif ($segments[0] === 'login' && $method === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $resultat = login($pdo, $data);
 }
+
 echo $resultat;
