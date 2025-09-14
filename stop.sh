@@ -19,6 +19,15 @@ else
     echo "Le serveur PHP pour phpMyAdmin n'est pas démarré sur le port $PHPMYADMIN_PORT"
 fi
 
+# Arrêter le serveur PHP pour la documentation de l'API
+API_DOC_PORT=8001
+if lsof -i:$API_DOC_PORT > /dev/null; then
+    echo "Arrêt du serveur PHP pour la documentation de l'API sur le port $API_DOC_PORT"
+    sudo kill $(lsof -t -i:$API_DOC_PORT)
+else
+    echo "Le serveur PHP pour la documentation de l'API n'est pas démarré sur le port $API_DOC_PORT"
+fi
+
 # Arrêter le service MariaDB
 echo "Arrêt du service MariaDB..."
 sudo service mariadb stop

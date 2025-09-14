@@ -1,4 +1,11 @@
 <?php
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Authorization, Content-Type");
+    http_response_code(200);
+    exit;
+}
 header("Content-Type: application/json");
 include 'configBdd.php';
 require __DIR__ . '/API/bateau.php';
@@ -9,6 +16,7 @@ $path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 $segments = explode('/', $path);
 
 $pdo = getPDO();
+$resultat = null;
 
 if ($segments[0] === 'bateaux') {
     switch ($method) {

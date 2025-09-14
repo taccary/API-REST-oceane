@@ -14,7 +14,7 @@ info:
     3. **Effectuez des requêtes** : Une fois autorisé, Swagger UI inclura automatiquement le jeton Bearer dans l'en-tête Authorization pour les requêtes vers les endpoints sécurisés.
 
 servers:
-  - url: https://solid-robot-w99677j797j2v459-8000.app.github.dev/API/
+  - url: https://super-barnacle-g559qqpg9q5cwj6p-8000.app.github.dev
     description: Serveur local
 
 components:
@@ -37,12 +37,12 @@ paths:
             schema:
               type: object
               properties:
-                email:
+                username:
                   type: string
-                  example: "user@example.com"
+                  example: "test@bts.sio"
                 password:
                   type: string
-                  example: "password123"
+                  example: "sio"
       responses:
         '200':
           description: Succès
@@ -65,14 +65,60 @@ paths:
                     type: string
                     example: "Invalid credentials"
 
-  /userInfo:
+  /bateaux:
     get:
-      summary: Récupérer les informations de l'utilisateur
-      description: |
-        Utilisez cet endpoint pour récupérer les informations de l'utilisateur authentifié.
-        Assurez-vous d'être authentifié en ayant copié le jeton Bearer obtenu par le end-point `/login` dans l'en-tête Authorization avant d'excuter la route.
+      summary: Liste des bateaux
+      description: Retourne tous les bateaux
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    nom:
+                      type: string
+                    type:
+                      type: string
+        '401':
+          description: Non autorisé
+    post:
+      summary: Créer un bateau
+      description: Crée un nouveau bateau
       security:
         - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nom:
+                  type: string
+                type:
+                  type: string
+      responses:
+        '201':
+          description: Créé
+        '401':
+          description: Non autorisé
+
+  /bateaux/{id}:
+    get:
+      summary: Détail d'un bateau
+      description: Retourne un bateau par son id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: Succès
@@ -83,30 +129,57 @@ paths:
                 properties:
                   id:
                     type: integer
-                    example: 1
-                  fullName:
+                  nom:
                     type: string
-                    example: "John Doe"
-                  email:
+                  type:
                     type: string
-                    example: "user@example.com"
+        '404':
+          description: Non trouvé
+    put:
+      summary: Modifier un bateau
+      description: Modifie un bateau existant
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nom:
+                  type: string
+                type:
+                  type: string
+      responses:
+        '200':
+          description: Succès
         '401':
           description: Non autorisé
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Unauthorized"
         '404':
-          description: Utilisateur non trouvé
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "User not found"
+          description: Non trouvé
+    delete:
+      summary: Supprimer un bateau
+      description: Supprime un bateau existant
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Supprimé
+        '401':
+          description: Non autorisé
+        '404':
+          description: Non trouvé
+

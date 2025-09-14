@@ -4,6 +4,7 @@
 # Définir les chemins vers les dossiers des sites
 WEB_DIR="site" # Chemin vers le dossier contenant les fichiers du site web
 phpMyAdmin_DIR="/usr/src/phpmyadmin" # Chemin vers le dossier phpMyAdmin installé dans le conteneur
+API_Doc_DIR="site-API-doc" # Chemin vers le dossier contenant la documentation de l'API
 
 # Créer le répertoire /run/mysqld si nécessaire et définir les permissions
 if [ ! -d /run/mysqld ]; then
@@ -40,3 +41,12 @@ else
     echo "Démarrage du serveur PHP pour phpMyAdmin sur http://0.0.0.0:$PHPMYADMIN_PORT"
     php -S 0.0.0.0:$PHPMYADMIN_PORT -t $phpMyAdmin_DIR &
 fi
+
+# Démarrage du serveur PHP pour la documentation de l'API
+API_DOC_PORT=8001
+if is_port_in_use $API_DOC_PORT; then
+    echo "Le serveur PHP pour la documentation de l'API est déjà démarré sur le port $API_DOC_PORT"
+else
+    echo "Démarrage du serveur PHP pour la documentation de l'API sur http://0.0.0.0:$API_DOC_PORT" -t $API_Doc_DIR &
+    php -S 0.0.0.0:$API_DOC_PORT -t $API_Doc_DIR &
+fi  
