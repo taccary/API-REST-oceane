@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: API Documentation
+  version: 1.0.0
+  description: |
+    Bienvenue dans la documentation de l'API.
+
+    ## Authentification
+
+    Cette API utilise l'authentification par jeton Bearer. Pour vous authentifier, suivez les étapes ci-dessous :
+
+    1. **Obtenez un jeton JWT** : Utilisez l'endpoint `/login` pour obtenir un jeton JWT en fournissant votre email et votre mot de passe.
+    2. **Autorisez Swagger UI** : Cliquez sur le bouton "Authorize" en haut à droite de Swagger UI. Entrez votre jeton JWT `Bearer ` (par exemple, `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`).
+    3. **Effectuez des requêtes** : Une fois autorisé, Swagger UI inclura automatiquement le jeton Bearer dans l'en-tête Authorization pour les requêtes vers les endpoints sécurisés.
+
+servers:
+  - url: https://solid-robot-w99677j797j2v459-8000.app.github.dev/API/
+    description: Serveur local
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /login:
+    post:
+      summary: Authentification de l'utilisateur
+      description: |
+        Utilisez cet endpoint pour obtenir un jeton JWT en fournissant votre email et votre mot de passe.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "user@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '401':
+          description: Non autorisé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid credentials"
+
+  /userInfo:
+    get:
+      summary: Récupérer les informations de l'utilisateur
+      description: |
+        Utilisez cet endpoint pour récupérer les informations de l'utilisateur authentifié.
+        Assurez-vous d'être authentifié en ayant copié le jeton Bearer obtenu par le end-point `/login` dans l'en-tête Authorization avant d'excuter la route.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  fullName:
+                    type: string
+                    example: "John Doe"
+                  email:
+                    type: string
+                    example: "user@example.com"
+        '401':
+          description: Non autorisé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized"
+        '404':
+          description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
