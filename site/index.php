@@ -1,40 +1,44 @@
 <?php
 header("Content-Type: application/json");
-
-// require 'vendor/autoload.php';
 include 'configBdd.php';
-// require_once 'src/utils/jwtUtils.php';
+require __DIR__ . '/API/bateau.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
-$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+$segments = explode('/', $path);
 
-// Ajuster le chemin pour gérer les sous-répertoires
-$basePath = '/API';
-$relativePath = str_replace($basePath, '', $path);
+$pdo = getPDO();
 
-try {
-    $pdo = new PDO($_ENV['DSN'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD'], $_ENV['OPTIONS']);
-
-    switch ($relativePath) {
-        // case '/login':
-        //     require 'src/handlers/login.php';
-        //     handleLogin($pdo);
-        //     break;
-
-        // case '/userInfo':
-        //     require 'src/handlers/userInfo.php';
-        //     handleUserInfo($pdo);
-        //     break;
-
-        case '/bateaux':
-            require '/API/bateau.php';
-            handleBateaux($pdo, $method);
+if ($segments[0] === 'bateaux') {
+    switch ($method) {
+        case 'GET':
+            if (isset($segments[1]) && is_numeric($segments[1])) {
+                $resultat = getBateau($pdo, intval($segments[1]));
+            } else {
+                $resultat = getBateaux($pdo);
+            }
             break;
-
+        case 'POST':
+            $resultat = createBateau($pdo, json_decode(file_get_contents('php://input'), true));
+            break;
+        case 'PUT':
+            if (isset($segments[1]) && is_numeric($segments[1])) {
+                $resultat = updateBateau($pdo, intval($segments[1]), json_decode(file_get_contents('php://input'), true));
+            } else {
+                $resultat = json_encode(["status" => "error", "message" => "ID manquant"]);
+            }
+            break;
+        case 'DELETE':
+            if (isset($segments[1]) && is_numeric($segments[1])) {
+                $resultat = deleteBateau($pdo, intval($segments[1]));
+            } else {
+                $resultat = json_encode(["status" => "error", "message" => "ID manquant"]);
+            }
+            break;
         default:
-            echo json_encode(["status" => "error", "message" => "Route non trouvée"]);
-            break;
+            $resultat = json_encode(["status" => "error", "message" => "Méthode non autorisée"]);
     }
-} catch (PDOException $e) {
-    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+} else {
+    $resultat = json_encode(["status" => "error", "message" => "Route non trouvée"]);
 }
+echo $resultat;
