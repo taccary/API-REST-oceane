@@ -1,5 +1,5 @@
 <?php
-function getBateaux($pdo) {
+function getBateaux(PDO $pdo) : string {
     $stmt = $pdo->query("SELECT * FROM bateau");
-    echo json_encode($stmt->fetchAll());
+    return json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
 }
