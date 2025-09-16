@@ -19,6 +19,8 @@ if ($segments[0] === 'bateaux') {
         default:
             $resultat = json_encode(["status" => "error", "message" => "Méthode non autorisée"]);
     }
+} else {
+    $resultat = json_encode(["status" => "error", "message" => "Ressource non trouvée"]);
 }
 
 

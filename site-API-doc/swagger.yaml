@@ -14,7 +14,7 @@ info:
     3. **Effectuez des requêtes** : Une fois autorisé, Swagger UI inclura automatiquement le jeton Bearer dans l'en-tête Authorization pour les requêtes vers les endpoints sécurisés.
 
 servers:
-  - url: https://super-barnacle-g559qqpg9q5cwj6p-8000.app.github.dev
+  - url: http://127.0.0.1:8000
     description: Serveur local
 
 components:
