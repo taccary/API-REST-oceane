@@ -12,7 +12,7 @@ RUN \
     && docker-php-ext-install mysqli pdo pdo_mysql
 
 # Expose les ports nécessaires
-EXPOSE 3306 8000 8001 8080
+EXPOSE 3306 8000 8080
 
 # Démarre le serveur MySQL
 CMD ["mysqld"]

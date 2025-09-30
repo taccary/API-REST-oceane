@@ -4,7 +4,6 @@
 # Définir les chemins vers les dossiers des sites
 WEB_DIR="site" # Chemin vers le dossier contenant les fichiers du site web
 phpMyAdmin_DIR="/usr/src/phpmyadmin" # Chemin vers le dossier phpMyAdmin installé dans le conteneur
-API_Doc_DIR="site-API-doc" # Chemin vers le dossier contenant la documentation de l'API
 
 # Créer le répertoire /run/mysqld si nécessaire et définir les permissions
 if [ ! -d /run/mysqld ]; then
